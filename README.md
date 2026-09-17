@@ -37,7 +37,9 @@ bit-perfect playback of the same file on your PC's own DAC.
 
 ## Install
 
-Download `EversoloForPC-Setup-x.y.z.exe` from the Releases page and run it. It installs per user
+Download `EversoloForPC-Setup-x.y.z.exe` from the
+[Releases page](https://github.com/mbbbuild-collab/EversoloForPC/releases/latest) and run it.
+The installer is not code-signed, so Windows SmartScreen may ask for confirmation. It installs per user
 (no administrator rights). On first start the app scans the local network for the streamer;
 you can also type its IP in Settings.
 

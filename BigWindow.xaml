@@ -1,0 +1,218 @@
+<Window x:Class="Eversolo.BigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Eversolo"
+        Title="{local:Tr big.title}" WindowStyle="None" ResizeMode="NoResize" Background="#FF121214"
+        FontFamily="Segoe UI" Foreground="#F1EFE8" ShowInTaskbar="True" PreviewKeyDown="OnKey"
+        TextOptions.TextFormattingMode="Ideal">
+    <Window.Resources>
+        <Storyboard x:Key="KenBurns" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="BgScale" Storyboard.TargetProperty="ScaleX" From="1.05" To="1.4" Duration="0:0:40">
+                <DoubleAnimation.EasingFunction><SineEase EasingMode="EaseInOut"/></DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BgScale" Storyboard.TargetProperty="ScaleY" From="1.05" To="1.4" Duration="0:0:40">
+                <DoubleAnimation.EasingFunction><SineEase EasingMode="EaseInOut"/></DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BgMove" Storyboard.TargetProperty="X" From="-120" To="120" Duration="0:0:31">
+                <DoubleAnimation.EasingFunction><SineEase EasingMode="EaseInOut"/></DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BgMove" Storyboard.TargetProperty="Y" From="70" To="-70" Duration="0:0:47">
+                <DoubleAnimation.EasingFunction><SineEase EasingMode="EaseInOut"/></DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
+    <Grid>
+        <Image x:Name="Bg" Stretch="UniformToFill" Opacity="0.34" RenderOptions.BitmapScalingMode="Linear" RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="BgScale" ScaleX="1.08" ScaleY="1.08"/>
+                    <TranslateTransform x:Name="BgMove"/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+        <Viewbox Stretch="Uniform">
+            <Grid Width="1920" Height="1080">
+                <Grid Margin="100,70,100,60" x:Name="Main">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="920"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- vinyl: disc behind the sleeve, sleeve = square cover -->
+                    <Grid Height="700" VerticalAlignment="Center" Margin="0,0,0,40">
+                        <Grid x:Name="Disc" Width="600" Height="600" Margin="300,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                              RenderTransformOrigin="0.5,0.5">
+                            <Grid.CacheMode>
+                                <BitmapCache RenderAtScale="1.2" SnapsToDevicePixels="False"/>
+                            </Grid.CacheMode>
+                            <Grid.RenderTransform>
+                                <RotateTransform x:Name="DiscRot"/>
+                            </Grid.RenderTransform>
+                            <Ellipse Fill="#FF0E0E10"/>
+                            <Ellipse x:Name="Grooves" Margin="4"/>
+                            <Ellipse Margin="4" Opacity="0.35">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#40FFFFFF" Offset="0"/>
+                                        <GradientStop Color="#00FFFFFF" Offset="0.35"/>
+                                        <GradientStop Color="#00FFFFFF" Offset="0.65"/>
+                                        <GradientStop Color="#30FFFFFF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Width="212" Height="212" Fill="#26215C"/>
+                            <Ellipse Width="212" Height="212">
+                                <Ellipse.Fill>
+                                    <ImageBrush x:Name="DiscLabel" Stretch="UniformToFill"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Width="18" Height="18" Fill="#FF121214"/>
+                        </Grid>
+                        <Grid x:Name="Sleeve" Width="700" Height="700" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="SleeveScale"/>
+                                    <TranslateTransform x:Name="SleeveMove"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                            <Grid.CacheMode>
+                                <BitmapCache RenderAtScale="1.2" SnapsToDevicePixels="False"/>
+                            </Grid.CacheMode>
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="60" ShadowDepth="0" Opacity="0.6" Color="Black"/>
+                            </Grid.Effect>
+                            <Rectangle RadiusX="16" RadiusY="16" Fill="#26215C"/>
+                            <TextBlock x:Name="CoverFallback" Text="&#xE8D6;" FontFamily="Segoe MDL2 Assets" FontSize="160"
+                                       Foreground="#AFA9EC" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Rectangle x:Name="CoverA" RadiusX="16" RadiusY="16" Opacity="0">
+                                <Rectangle.Fill>
+                                    <ImageBrush x:Name="CoverBrushA" Stretch="UniformToFill"/>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle x:Name="CoverB" RadiusX="16" RadiusY="16" Opacity="0">
+                                <Rectangle.Fill>
+                                    <ImageBrush x:Name="CoverBrushB" Stretch="UniformToFill"/>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Grid>
+                    </Grid>
+
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,0,40">
+                        <TextBlock x:Name="Device" Text="Eversolo" FontSize="20" Foreground="#B4B2A9" TextTrimming="CharacterEllipsis"/>
+                        <StackPanel x:Name="TextPanel">
+                            <TextBlock x:Name="TitleT" Text="—" FontSize="56" FontWeight="SemiBold" LineHeight="66" LineStackingStrategy="BlockLineHeight"
+                                       TextTrimming="CharacterEllipsis" TextWrapping="Wrap" MaxHeight="132" Margin="0,14,0,0">
+                                <TextBlock.RenderTransform><TranslateTransform x:Name="T1"/></TextBlock.RenderTransform>
+                            </TextBlock>
+                            <TextBlock x:Name="ArtistT" FontSize="36" Foreground="#D3D1C7" TextTrimming="CharacterEllipsis" Margin="0,8,0,0">
+                                <TextBlock.RenderTransform><TranslateTransform x:Name="T2"/></TextBlock.RenderTransform>
+                            </TextBlock>
+                            <TextBlock x:Name="AlbumT" FontSize="26" Foreground="#888780" TextTrimming="CharacterEllipsis" Margin="0,4,0,0">
+                                <TextBlock.RenderTransform><TranslateTransform x:Name="T3"/></TextBlock.RenderTransform>
+                            </TextBlock>
+                            <TextBlock x:Name="FmtT" FontSize="20" Foreground="#B4B2A9" Margin="0,18,0,0">
+                                <TextBlock.RenderTransform><TranslateTransform x:Name="T4"/></TextBlock.RenderTransform>
+                            </TextBlock>
+                        </StackPanel>
+                        <Grid Height="8" Margin="0,34,0,0" x:Name="ProgTrack">
+                            <Rectangle Fill="#3A3A3C" RadiusX="4" RadiusY="4"/>
+                            <Rectangle x:Name="ProgFill" Fill="#AFA9EC" RadiusX="4" RadiusY="4" HorizontalAlignment="Left" Width="0"/>
+                        </Grid>
+                        <DockPanel Margin="0,8,0,0">
+                            <TextBlock x:Name="DurT" DockPanel.Dock="Right" Text="0:00" FontSize="20" Foreground="#B4B2A9"/>
+                            <TextBlock x:Name="PosT" Text="0:00" FontSize="20" Foreground="#B4B2A9"/>
+                        </DockPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                            <Button Style="{StaticResource Glyph}" Content="&#xE892;" FontSize="28" Width="60" Height="60" Click="OnPrev"/>
+                            <Button Style="{StaticResource Glyph}" x:Name="PlayBtn" Content="&#xE768;" FontSize="32" Width="60" Height="60" Click="OnPlayPause"/>
+                            <Button Style="{StaticResource Glyph}" Content="&#xE893;" FontSize="28" Width="60" Height="60" Click="OnNext"/>
+                            <Button Style="{StaticResource Glyph}" Content="&#xE721;" FontSize="24" Width="60" Height="60" Margin="20,0,0,0" Click="OnOpenSearch" ToolTip="{local:Tr tip.search}"/>
+                        </StackPanel>
+                        <Border BorderBrush="#3A3A3C" BorderThickness="0,0.5,0,0" Margin="0,30,0,0" Padding="0,16,0,0">
+                            <StackPanel x:Name="QueuePanel">
+                                <TextBlock Text="{local:Tr big.upnext}" FontSize="18" Foreground="#888780"/>
+                                <TextBlock x:Name="Q1" FontSize="24" Foreground="#D3D1C7" TextTrimming="CharacterEllipsis" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="Q2" FontSize="24" Foreground="#888780" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="Q3" FontSize="24" Foreground="#5F5E5A" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <!-- live spectrum from the PC audio stream -->
+                <Canvas x:Name="SpectrumCanvas" Width="1720" Height="110" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                        Margin="0,0,0,58" Opacity="0" IsHitTestVisible="False"/>
+
+                <TextBlock x:Name="Offline" Text="Eversolo" FontSize="48" Foreground="#888780"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+
+                <TextBlock Text="{local:Tr big.hint}"
+                           FontSize="15" Foreground="#5F5E5A" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,22"/>
+
+                <Border x:Name="SearchPanel" Visibility="Collapsed" Background="#F5141416" BorderBrush="#33FFFFFF" BorderThickness="0.5"
+                        CornerRadius="20" Margin="260,80" Padding="32">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top">
+                            <TextBox x:Name="SearchBox" FontSize="34" Padding="16,10" Background="#1F1F22" Foreground="#F1EFE8"
+                                     BorderBrush="#3A3A3C" BorderThickness="1" CaretBrush="#F1EFE8"
+                                     TextChanged="OnSearchText" PreviewKeyDown="OnSearchKey"/>
+                            <TextBlock x:Name="SearchHint" Text="{local:Tr search.placeholder}" FontSize="34" Foreground="#5F5E5A"
+                                       Margin="20,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                        </Grid>
+                        <TextBlock DockPanel.Dock="Top" x:Name="SearchStatus" FontSize="18" Foreground="#888780" Margin="4,12,0,8"/>
+                        <ListBox x:Name="Results" Background="Transparent" BorderThickness="0" Foreground="#F1EFE8"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="OnResultActivate"
+                                 PreviewKeyDown="OnResultsKey" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="14,10"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="b" Background="Transparent" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="b" Property="Background" Value="#22FFFFFF"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="b" Property="Background" Value="#447F77DD"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <Grid DockPanel.Dock="Left" Width="72" Height="72" Margin="0,0,14,0" VerticalAlignment="Center">
+                                            <Rectangle RadiusX="8" RadiusY="8" Fill="#26215C"/>
+                                            <TextBlock Text="&#xE8D6;" FontFamily="Segoe MDL2 Assets" FontSize="26" Foreground="#AFA9EC" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Rectangle RadiusX="8" RadiusY="8">
+                                                <Rectangle.Fill>
+                                                    <ImageBrush ImageSource="{Binding Thumb}" Stretch="UniformToFill"/>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                        </Grid>
+                                        <Border DockPanel.Dock="Left" Background="#33FFFFFF" CornerRadius="6" Padding="10,2" VerticalAlignment="Center" Margin="0,0,16,0" Width="90">
+                                            <TextBlock Text="{Binding Kind}" FontSize="16" Foreground="#D3D1C7" HorizontalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Title}" FontSize="26" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding Sub}" FontSize="18" Foreground="#888780" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding Meta}" FontSize="15" Foreground="#AFA9EC" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </Viewbox>
+    </Grid>
+</Window>

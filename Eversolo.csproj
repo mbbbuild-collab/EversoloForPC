@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <AssemblyName>EversoloForPC</AssemblyName>
+    <RootNamespace>Eversolo</RootNamespace>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <Version>0.2.0</Version>
+    <Product>EversoloForPC</Product>
+    <AssemblyTitle>EversoloForPC</AssemblyTitle>
+    <Description>Now-playing widget, big-screen view, library search and bit-perfect PC playback companion for Eversolo streamers (unofficial).</Description>
+    <Authors>MBB</Authors>
+    <Company>MBB</Company>
+    <Copyright>Copyright © 2026 MBB (mbb.build@gmail.com)</Copyright>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="dist\**;publish\**;installer\**" />
+    <None Remove="dist\**;publish\**" />
+  </ItemGroup>
+</Project>

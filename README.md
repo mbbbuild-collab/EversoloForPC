@@ -75,6 +75,10 @@ The device API is undocumented; what was learned the hard way is in
 [docs/DEVICE-API.md](docs/DEVICE-API.md). Read it before probing the device: some calls stall its
 music database for minutes.
 
+## License
+
+[MIT](LICENSE). ffmpeg is a separate program under its own license and is not distributed with this project.
+
 ## Author
 
 MBB — mbb.build@gmail.com

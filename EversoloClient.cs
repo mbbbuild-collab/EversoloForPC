@@ -7,7 +7,12 @@ using System.Text.Json;
 namespace Eversolo;
 
 public sealed record Track(long Id, int Type, string Title, string Artist, string Album, long AlbumId,
-    string Bitrate, string SampleRate, int Bits, string Extension, int Channels, string Uri = "", long Duration = 0);
+    string Bitrate, string SampleRate, int Bits, string Extension, int Channels, string Uri = "", long Duration = 0,
+    string AlbumArt = "", string Stream = "")
+{
+    /// <summary>True for Qobuz / Tidal / radio etc.: no file on the NAS, cover comes from a URL.</summary>
+    public bool IsStream => Stream != "" || Uri.StartsWith("http", StringComparison.OrdinalIgnoreCase);
+}
 
 public sealed record Album(long Id, string Name, string Artist, string Year);
 
@@ -45,7 +50,18 @@ public sealed class EversoloClient
         if (rate == "") { var n = L(e, "SampleRate"); if (n == 0) n = L(e, "sampleRateNumber"); if (n > 0) rate = n.ToString(); }
         return new(L(e, "id"), (int)L(e, "type"), S(e, "title"), S(e, "artist"),
             S(e, "album"), L(e, "albumId"), S(e, "bitrate"), rate, (int)L(e, "bits"), S(e, "extension"),
-            (int)L(e, "channels"), S(e, "uri"), L(e, "duration"));
+            (int)L(e, "channels"), S(e, "uri"), L(e, "duration"), S(e, "albumArtBig") is { Length: > 0 } big ? big : S(e, "albumArt"), S(e, "streamId"));
+    }
+
+    /// <summary>Downloads bytes from an http(s) URL (streaming-service cover art); null on failure.</summary>
+    public static async Task<byte[]?> GetUrlBytesAsync(string url)
+    {
+        try
+        {
+            var b = await Http.GetByteArrayAsync(url);
+            return b.Length > 200 ? b : null;
+        }
+        catch { return null; }
     }
 
     public async Task<PlayerState?> GetStateAsync()

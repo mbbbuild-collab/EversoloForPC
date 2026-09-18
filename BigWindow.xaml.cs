@@ -241,13 +241,17 @@ public partial class BigWindow : Window
         bool playing = _p.IsPlaying;
         Device.Text = $"{App.DeviceName}   ·   {st!.Output}   ·   {(playing ? Loc.T("state.playing") : Loc.T("state.paused"))}"
                       + (App.Local.Enabled ? $"   ·   {App.Local.Status}" : "");
+        // Texts follow every poll (streams fill in format/bitrate a few seconds after starting); animate on a change of track.
+        var title = t?.Title is { Length: > 0 } ? t.Title : Loc.T("track.none");
+        var fmt = t == null ? "" : Fmt.Format(t);
+        if (t != null && t.IsStream && t.Stream != "") fmt = (fmt == "" ? "" : fmt + "   ·   ") + char.ToUpperInvariant(t.Stream[0]) + t.Stream[1..];
+        if (TitleT.Text != title) TitleT.Text = title;
+        if (ArtistT.Text != (t?.Artist ?? "")) ArtistT.Text = t?.Artist ?? "";
+        if (AlbumT.Text != (t?.Album ?? "")) AlbumT.Text = t?.Album ?? "";
+        if (FmtT.Text != fmt) FmtT.Text = fmt;
         if ((t?.Id ?? -1) != _shownTrackId)
         {
             _shownTrackId = t?.Id ?? -1;
-            TitleT.Text = t?.Title is { Length: > 0 } ? t.Title : Loc.T("track.none");
-            ArtistT.Text = t?.Artist ?? "";
-            AlbumT.Text = t?.Album ?? "";
-            FmtT.Text = t == null ? "" : Fmt.Format(t);
             AnimateText();
         }
         PlayBtn.Content = playing ? "" : "";

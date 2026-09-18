@@ -54,9 +54,17 @@ public static class Fmt
         return string.Join("   ·   ", parts);
     }
 
-    static string Rate(string s) => long.TryParse(s, out var n) ? (n > 0 ? $"{n / 1000.0:0.#} kHz" : "") : s;
+    // The device sends numbers in some lists and pre-formatted strings ("44.1 kHz", "736,61 Kbps") in others,
+    // and zeros ("0 kHz", "0 Bbps") for the first seconds of a stream: hide those.
+    static string Rate(string s) => long.TryParse(s, out var n) ? (n > 0 ? $"{n / 1000.0:0.#} kHz" : "") : ZeroToEmpty(s);
 
     static string Bitrate(string s) => long.TryParse(s, out var n)
         ? (n <= 0 ? "" : n >= 1_000_000 ? $"{n / 1_000_000.0:0.00} Mbps" : $"{n / 1000} kbps")
-        : s;
+        : ZeroToEmpty(s);
+
+    static string ZeroToEmpty(string s)
+    {
+        var t = s.Trim();
+        return t == "" || t == "0" || t.StartsWith("0 ") || t.StartsWith("0,0") || t.StartsWith("0.0") ? "" : t;
+    }
 }

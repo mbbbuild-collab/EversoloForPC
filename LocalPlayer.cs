@@ -312,6 +312,15 @@ public sealed class LocalPlayer : IDisposable
         if (t.Id != _openedTrackId)
         {
             if (t.Id != _lastEndedTrackId) _lastEndedTrackId = -1;
+            if (t.IsStream)
+            {
+                // Qobuz / Tidal / radio: the device plays a signed, time-limited URL; there is no file to mirror.
+                StopPipeline();
+                _openedTrackId = t.Id;
+                Status = Loc.T("lp.streaming", t.Stream == "" ? "stream" : t.Stream);
+                Changed?.Invoke();
+                return;
+            }
             // Nothing open and the device is paused (or we already finished this file and released the DAC):
             // do not grab the sound card again until playback actually resumes / the track changes.
             if (!_p.IsPlaying || t.Id == _lastEndedTrackId)

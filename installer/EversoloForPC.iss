@@ -2,7 +2,7 @@
 ; Build:  dotnet publish -c Release -r win-x64 --self-contained true -o publish
 ;         ISCC installer\EversoloForPC.iss
 #define AppName "EversoloForPC"
-#define AppVersion "0.2.0"
+#define AppVersion "0.2.1"
 #define AppPublisher "MBB"
 #define AppContact "mbb.build@gmail.com"
 #define AppExe "EversoloForPC.exe"

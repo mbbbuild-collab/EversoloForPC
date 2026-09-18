@@ -21,6 +21,13 @@ No authentication. Everything here was found by experiment and by reading
 
 There is no bulk "all tracks" endpoint: a full index means one `getAlbumMusics` per album.
 
+### Streaming services (Qobuz, Tidal, radio…)
+
+`playingMusic` carries `streamId` ("qobuz"), `streamQuality`, `audioQuality`, `albumArt` / `albumArtBig`
+(cover URL), `streamUrl`, `trackUrl`, `type 3`, negative ids. `sampleRate` / `bitrate` / `bits` are **0 for the
+first seconds** and fill in later, so re-read them on every poll. Queue items have an `https://…` `uri`
+(signed, time-limited); there is no file to mirror, and `getImage` returns the generic icon — use `albumArt`.
+
 ## Remote control keys (`ZidooControlCenter/RemoteControl/sendkey?key=`)
 
 `Key.MediaPlay`, `Key.MediaPause`, `Key.MediaNext`, `Key.MediaPrevious`, … always work, including when

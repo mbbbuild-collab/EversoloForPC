@@ -10,7 +10,7 @@
     <AssemblyName>EversoloForPC</AssemblyName>
     <RootNamespace>Eversolo</RootNamespace>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Product>EversoloForPC</Product>
     <AssemblyTitle>EversoloForPC</AssemblyTitle>
     <Description>Now-playing widget, big-screen view, library search and bit-perfect PC playback companion for Eversolo streamers (unofficial).</Description>

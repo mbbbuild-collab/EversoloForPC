@@ -75,6 +75,7 @@ public static class Loc
 
         // local player
         ["lp.notrack"] = ("No track on the device", "Cihazda parça yok"),
+        ["lp.streaming"] = ("Streaming ({0}) – PC playback not available", "Akış ({0}) – PC'de dinleme yok"),
         ["lp.nopath"] = ("File path unknown (waiting for the queue)", "Dosya yolu bilinmiyor (kuyruk bekleniyor)"),
         ["lp.missing"] = ("Not on the NAS: {0}", "NAS'ta dosya yok: {0}"),
         ["lp.opening"] = ("Opening: {0}", "Açılıyor: {0}"),

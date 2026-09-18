@@ -12,6 +12,7 @@ public sealed class PlayerService : IDisposable
     readonly CancellationTokenSource _cts = new();
     long _lastTrackId = -1, _lastQueueStamp = -1;
     int _refreshRequested, _coverRetries;
+    bool _coverUrlDone;
 
     public PlayerState? State { get; private set; }
     public DateTime StateAt { get; private set; }
@@ -115,7 +116,8 @@ public sealed class PlayerService : IDisposable
             {
                 _lastTrackId = tid;
                 cover = null;
-                _coverRetries = 6; // the device can be slow right after a track change; keep trying for a while
+                _coverRetries = 8; // the device can be slow right after a track change; keep trying for a while
+                _coverUrlDone = false;
                 _fallbackDuration = 0;
                 _trackStartedAt = at;
                 _pausedAccumMs = 0;
@@ -134,19 +136,28 @@ public sealed class PlayerService : IDisposable
                 _lastQueueStamp = st.QueueChangedAt;
                 queue = await _c.GetQueueAsync();
             }
-            if (cover == null && st.Track != null && _coverRetries > 0)
+            // Streams announce their cover URL a poll or two after starting; until it is fetched keep trying even if the
+            // device already handed us its generic placeholder image.
+            bool wantUrlCover = st.Track != null && !_coverUrlDone && st.Track.AlbumArt.StartsWith("http", StringComparison.OrdinalIgnoreCase);
+            if ((cover == null || wantUrlCover) && st.Track != null && _coverRetries > 0)
             {
                 _coverRetries--;
                 // Prefer real artwork next to the file on the NAS (the device returns a generic note icon when it has none).
                 byte[]? bytes = null;
+                if (wantUrlCover)
+                {
+                    bytes = await EversoloClient.GetUrlBytesAsync(st.Track.AlbumArt); // streaming services: cover URL
+                    if (bytes != null) _coverUrlDone = true;
+                    else if (cover != null) bytes = null; // keep the current image, retry the URL next poll
+                }
                 var uri = st.Track.Uri;
                 if (string.IsNullOrEmpty(uri)) uri = (queue ?? Queue).FirstOrDefault(q => q.Id == tid)?.Uri ?? "";
-                if (uri != "" && LocalCoverProvider != null)
+                if (bytes == null && uri != "" && !st.Track.IsStream && LocalCoverProvider != null)
                     bytes = await Task.Run(() => { try { return LocalCoverProvider(uri); } catch { return null; } });
                 bytes ??= await _c.GetImageAsync(tid, st.Track.Type);
                 if (bytes != null) { try { cover = ToImage(bytes); } catch { cover = null; } }
             }
-            if (st.Track != null && st.DurationMs == 0 && _fallbackDuration == 0 && DurationProbe != null)
+            if (st.Track != null && !st.Track.IsStream && st.DurationMs == 0 && _fallbackDuration == 0 && DurationProbe != null)
             {
                 var uri = st.Track.Uri;
                 if (string.IsNullOrEmpty(uri)) uri = (queue ?? Queue).FirstOrDefault(q => q.Id == tid)?.Uri ?? "";

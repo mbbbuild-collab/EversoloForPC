@@ -239,12 +239,14 @@ public partial class BigWindow : Window
         if (!on) { SetSpin(false); return; }
 
         bool playing = _p.IsPlaying;
-        Device.Text = $"{App.DeviceName}   ·   {st!.Output}   ·   {(playing ? Loc.T("state.playing") : Loc.T("state.paused"))}"
-                      + (App.Local.Enabled ? $"   ·   {App.Local.Status}" : "");
+        // Header: device · output · state, then either the PC player's status (NAS files) or just the streaming service name.
+        string extra = t != null && t.IsStream
+            ? (t.Stream == "" ? "" : $"   ·   {char.ToUpperInvariant(t.Stream[0])}{t.Stream[1..]}")
+            : (App.Local.Enabled ? $"   ·   {App.Local.Status}" : "");
+        Device.Text = $"{App.DeviceName}   ·   {st!.Output}   ·   {(playing ? Loc.T("state.playing") : Loc.T("state.paused"))}{extra}";
         // Texts follow every poll (streams fill in format/bitrate a few seconds after starting); animate on a change of track.
         var title = t?.Title is { Length: > 0 } ? t.Title : Loc.T("track.none");
         var fmt = t == null ? "" : Fmt.Format(t);
-        if (t != null && t.IsStream && t.Stream != "") fmt = (fmt == "" ? "" : fmt + "   ·   ") + char.ToUpperInvariant(t.Stream[0]) + t.Stream[1..];
         if (TitleT.Text != title) TitleT.Text = title;
         if (ArtistT.Text != (t?.Artist ?? "")) ArtistT.Text = t?.Artist ?? "";
         if (AlbumT.Text != (t?.Album ?? "")) AlbumT.Text = t?.Album ?? "";
@@ -359,7 +361,7 @@ public partial class BigWindow : Window
             case Key.Right: _ = _p.Next(); e.Handled = true; break;
             case Key.Left: _ = _p.Prev(); e.Handled = true; break;
             case Key.F5: _ = _lib.RefreshAsync(App.Client); e.Handled = true; break;
-            case Key.L: App.Local.Enabled = !App.Local.Enabled; e.Handled = true; break;
+            case Key.L: if (App.LocalAvailable) App.Local.Enabled = !App.Local.Enabled; e.Handled = true; break;
             case Key.F3:
             case Key.OemQuestion:
             case Key.Divide:

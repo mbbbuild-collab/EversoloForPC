@@ -58,8 +58,9 @@ public partial class WidgetWindow : Window
         ArtistT.Text = t?.Artist ?? "";
         AlbumT.Text = t?.Album ?? "";
         FmtT.Text = t == null ? "" : Fmt.Format(t);
-        VolT.Text = App.Local.Enabled ? "PC 🔊 " + (st?.VolumeDisplay ?? "") : st?.VolumeDisplay ?? "";
+        VolT.Text = App.Local.Enabled && App.LocalAvailable ? "PC 🔊 " + (st?.VolumeDisplay ?? "") : st?.VolumeDisplay ?? "";
         LocalMenu.IsChecked = App.Local.Enabled;
+        LocalMenu.IsEnabled = App.LocalAvailable; // streams: no file to mirror, option greyed out
 
         CoverBrush.ImageSource = _p.Cover;
         MiniCoverBrush.ImageSource = _p.Cover;

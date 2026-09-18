@@ -12,6 +12,9 @@ public partial class App : System.Windows.Application
     public static LocalPlayer Local { get; private set; } = null!;
     /// <summary>Model name reported by the streamer (e.g. "DMP-A8"); "Eversolo" until known.</summary>
     public static string DeviceName { get; private set; } = "Eversolo";
+
+    /// <summary>"Listen on this PC" only makes sense for files on the NAS; streams (Qobuz, Tidal, radio) have none.</summary>
+    public static bool LocalAvailable => Player?.State?.Track is { } t && !t.IsStream;
     public static new App Current => (App)System.Windows.Application.Current;
 
     WidgetWindow? _widget;
@@ -104,6 +107,7 @@ public partial class App : System.Windows.Application
         var local = new Forms.ToolStripMenuItem(Loc.T("menu.local.long")) { Checked = S.LocalPlay, CheckOnClick = true };
         local.Click += (_, _) => Local.Enabled = local.Checked;
         Local.Changed += () => { if (local.Checked != Local.Enabled) local.Checked = Local.Enabled; };
+        Player.Changed += () => local.Enabled = LocalAvailable; // greyed out while a stream is playing
         menu.Items.Add(local);
         menu.Items.Add(Loc.T("menu.refresh"), null, (_, _) => _ = Library.RefreshAsync(Client));
         var crawl = new Forms.ToolStripMenuItem(Loc.T("menu.crawl.pause"));
@@ -135,7 +139,7 @@ public partial class App : System.Windows.Application
             case "playpause": _ = Player.PlayOrPause(); break;
             case "next": _ = Player.Next(); break;
             case "prev": _ = Player.Prev(); break;
-            case "local": Local.Enabled = !Local.Enabled; break;
+            case "local": if (LocalAvailable) Local.Enabled = !Local.Enabled; break;
             case "settings": ShowSettings(); break;
         }
     }
